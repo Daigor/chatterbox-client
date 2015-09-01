@@ -113,9 +113,9 @@ app.display = function(){
 		roomname = app.roomMessages[i].roomname;
 
 		spanUser = $('<span/>');
-		spanUser.text(name).attr('class', 'username').attr("onClick", 'app.addFriend("' + name +'")');
+		spanUser.text(name).attr('class', 'username');
 		if (app.friends.indexOf(name) > -1){
-			spanUser.css({"font-weight" : "bold"});
+			span.css({"font-weight" : "bold"});
 		}
 		spanText = $('<span/>');
 		spanText.text(text).attr('class', 'message');
@@ -123,18 +123,11 @@ app.display = function(){
 		//Single room
 		div = $('<div/>').attr('class', 'alert alert-success');
 		div.append(spanUser);
-		div.append($('<span>: </span>'))
 		div.append(spanText);		
 
 		$('#' + cleanCSSName(app.currentRoom)).append(div);
 	}
 	setInterval(app.fetch,5000);
-};
-
-app.addFriend = function(name){
-	if(app.friends.indexOf(name) === -1){
-		app.friends.push(name);
-	}
 };
 
 $('#send').submit(function(event){
