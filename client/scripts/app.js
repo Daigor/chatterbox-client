@@ -53,13 +53,14 @@ app.send = function(message){
 	  contentType: 'application/json',
 	  success: function (data) {
 	    console.log('chatterbox: Message sent');
+	    app.fetch();
 	  },
 	  error: function (data) {
 	    // See: https://developer.mozilla.org/en-US/docs/Web/API/console.error
 	    console.error('chatterbox: Failed to send message');
 	  }
 	});
-	}
+}
 app.fetch = function(){
 	url = 'https://api.parse.com/1/classes/chatterbox';
 	$.ajax({
@@ -148,4 +149,5 @@ $('#send').submit(function(event){
 });
 $('#rooms').change(function(){
 	app.currentRoom = $( "#rooms :selected" )[0].innerText;
+	app.fetch();
 })
