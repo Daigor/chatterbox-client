@@ -128,7 +128,7 @@ app.display = function(){
 
 		$('#' + cleanCSSName(app.currentRoom)).append(div);
 	}
-	setInterval(app.fetch,5000);
+	setTimeout(app.fetch,5000);
 };
 
 app.addFriend = function(name){
