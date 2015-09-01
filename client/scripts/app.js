@@ -1,9 +1,32 @@
 // YOUR CODE HERE:
 var app = {};
 app.server = 'https://api.parse.com/1/classes/chatterbox';
+app.currentRoom = null;
 app.messages = null;
+app.roomMessages = null;
+
 app.init = function(){
 	app.fetch();
+};
+
+
+app.updateRoomOptions = function() {
+	var roomnames;
+	var option;
+	var filterFunction = function(data){
+		if (typeof data !== 'string'){
+			return false;
+		}
+		return true;
+	};
+	
+	roomnames = _.filter(_.uniq(_.map(app.messages, function(obj){return obj['roomname'];})),filterFunction);
+	$('#rooms').text('')
+	for(var i = 0; i < roomnames.length; i++){
+		option = $("<option/>");
+		option.text(roomnames[i]);
+		$('#rooms').append(option);
+	}
 };
 
 app.send = function(message){
@@ -23,11 +46,26 @@ app.send = function(message){
 	});
 	}
 app.fetch = function(){
+	url = 'https://api.parse.com/1/classes/chatterbox';
 	$.ajax({
 	  // This is the url you should use to communicate with the parse API server.
-	  url: 'https://api.parse.com/1/classes/chatterbox',
+	  url: url,
 	  type: 'GET',
-	  success: function(data){ app.messages = data['results']; app.display(); app.fetch();}
+		  success: function(data){ app.messages = data['results']; 
+		  
+		  app.updateRoomOptions(); 
+		  app.fetch();
+		}
+	});
+}
+
+app.fetchRoom = function(){
+	url = 'https://api.parse.com/1/classes/chatterbox?where{"roomname":"' + app.currentRoom + '"}';
+	$.ajax({
+	  // This is the url you should use to communicate with the parse API server.
+	  url: url,
+	  type: 'GET',
+	  success: function(data){ app.messages = data['results']; app.display(); app.fetchRoom(app.currentRoom);}
 	});
 }
 
@@ -36,23 +74,11 @@ app.display = function(){
 	var text;
 	var div;
 	var roomnames;
-	// filters data for strings and numbers only 
-	var filterFunction = function(data){
-		if (typeof data !== 'string'){
-			return false;
-		}
-		return true;
-	};
 	//maps data by roomnames and only takes the unique of those roomnames, then filters by filter function above
 	roomnames = _.filter(_.uniq(_.map(app.messages, function(obj){return obj['roomname'];})),filterFunction);
+	
 	$('#chats').text('');
-	//all is equal to a jquery div with an id of 'all'
-	var all = $('<div/>').attr('id','all');
-	//targets the node with chat ID and appends the <div id = all>
-	$('#chats').append(all);
-	//targets the node with all ID and appends a header that has all the rooms
-	$('#all').append($('<h3>All Rooms</h3>'));
-	//loops through unique roomname array
+
 	for (var r = 0; r < roomnames.length; r++){
 		// creates a div
 		div = $('<div/>');
@@ -69,10 +95,6 @@ app.display = function(){
 		text = app.messages[i].text;
 		roomname = app.messages[i].roomname;
 
-		//All rooms
-		div = $('<div/>');
-		div.text(name + ":" + text);
-		$('#all').append(div);
 
 		//Single room
 		div = $('<div/>');
