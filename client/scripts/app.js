@@ -7,6 +7,8 @@ app.roomMessages = null;
 app.friends = [];
 
 app.init = function(){
+	var username = window.location.search.split('=')[1];
+	$('#username').val(username);
 	app.fetch();
 };
 
@@ -24,7 +26,7 @@ app.updateRoomOptions = function() {
 	var mapped = _.map(filtered, function(obj){return obj['roomname'];});
 	var unique = _.uniq(mapped);
 	roomnames = unique;
-	$('#rooms').text('')
+	$('#rooms').text('');
 	var index = roomnames.indexOf(app.currentRoom);
 	if (index > 0){
 		temp = roomnames[0];
