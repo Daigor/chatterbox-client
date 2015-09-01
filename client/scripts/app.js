@@ -110,12 +110,9 @@ app.display = function(){
 		text = app.roomMessages[i].text;
 		roomname = app.roomMessages[i].roomname;
 
-		if (app.friends.indexOf(name) < 0){
-			span = $('<span/>');
-			span.text(name).attr('class', 'username');
-		} else{
-			span = $('<span/>');
-			span.text(name).attr('class', 'username');
+		span = $('<span/>');
+		span.text(name).attr('class', 'username');
+		if (app.friends.indexOf(name) > 0){
 			span.css({"font-weight" : "bold"});
 		}
 
@@ -125,10 +122,6 @@ app.display = function(){
 		div.append(span);
 
 		$('#' + app.currentRoom).append(div);
-		$('.username').on("click", function(){
-			console.log($(this));
-			app.friends.push($(this).innerText);
-		});
 	}
 	setInterval(app.fetch,5000);
 };
